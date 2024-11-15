@@ -26,10 +26,10 @@ public class LEDsSubSystem extends SubsystemBase {
   int setValue;
 
   public LEDsSubSystem() {
-    m_led = new AddressableLED(1); // Set the LED PWM port to 0
+    m_led = new AddressableLED(0); // Set the LED PWM port to 0
 
     // Reuse buffer, setting length is expensive to set, so only set it once, then just update data
-    m_ledBuffer = new AddressableLEDBuffer(23);  //Set the buffer length to 23
+    m_ledBuffer = new AddressableLEDBuffer(34);  //Set the buffer length to 23
     m_led.setLength(m_ledBuffer.getLength()); //Set the length of the LED buffer
     m_led.start();// Start the LED buffer
   }

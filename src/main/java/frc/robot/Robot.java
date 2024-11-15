@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Constants.AprilTagConstants;
 import frc.robot.subsystems.LEDsSubSystem;
-import frc.robot.subsystems.Vision.ObjectVision;
+// import frc.robot.subsystems.Vision.ObjectVision;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,7 +37,7 @@ public class Robot extends TimedRobot
   private Timer disabledTimer;
 
   public static LEDsSubSystem m_LEDsSubSystem = new LEDsSubSystem(); // Create a new LEDsSubSystem object
-  public static ObjectVision m_ObjectVision = new ObjectVision(m_LEDsSubSystem); // Create a new ObjectVision object
+  // public static ObjectVision m_ObjectVision = new ObjectVision(m_LEDsSubSystem); // Create a new ObjectVision object
 
   public Robot()
   {
@@ -62,7 +62,7 @@ public class Robot extends TimedRobot
     // Create a timer to disable motor brake a few seconds after disable.  This will let the robot stop
     // immediately when disabled, but then also let it be pushed more 
     disabledTimer = new Timer();
-    m_ObjectVision = new ObjectVision(m_LEDsSubSystem);
+    // m_ObjectVision = new ObjectVision(m_LEDsSubSystem);
     DriverStation.silenceJoystickConnectionWarning(true); // Silence the joystick connection warning
   }
 
@@ -156,7 +156,12 @@ public class Robot extends TimedRobot
   public void teleopPeriodic()
   {
     m_robotContainer.spencerButtons();
-    m_ObjectVision.watchForNote();
+    // m_ObjectVision.watchForNote();
+    if(DriverStation.getAlliance().get() == Alliance.Blue){
+      m_LEDsSubSystem.setSolidLED(90, 255, 255);
+    } else {
+      m_LEDsSubSystem.setSolidLED(0, 255, 255);
+    }
   }
 
   @Override

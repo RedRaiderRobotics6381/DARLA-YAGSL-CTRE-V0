@@ -39,7 +39,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import frc.robot.Constants;
 import frc.robot.Constants.AutonConstants;
-import frc.robot.subsystems.Vision.FiducialVision;
+// import frc.robot.subsystems.Vision.FiducialVision;
 import swervelib.SwerveController;
 import swervelib.SwerveDrive;
 import swervelib.SwerveDriveTest;
@@ -57,7 +57,7 @@ public class SwerveSubsystem extends SubsystemBase
   /**
    * PhotonVision class to keep an accurate odometry.
    */
-  private       FiducialVision  vision;
+  // private       FiducialVision  vision;
   /**
    * Swerve drive object.
    */
@@ -69,7 +69,7 @@ public class SwerveSubsystem extends SubsystemBase
   /**
    * Enable vision odometry updates while driving.
    */
-  private final boolean visionDriveTest = true;
+  private final boolean visionDriveTest = false;
 
   /**
    * Initialize {@link SwerveDrive} with the directory provided.
@@ -136,7 +136,7 @@ public class SwerveSubsystem extends SubsystemBase
    */
   public void setupPhotonVision()
   {
-    vision = new FiducialVision(swerveDrive::getPose, swerveDrive.field);
+    // vision = new FiducialVision(swerveDrive::getPose, swerveDrive.field);
   }
 
   @Override
@@ -146,7 +146,7 @@ public class SwerveSubsystem extends SubsystemBase
     if (visionDriveTest)
     {
       swerveDrive.updateOdometry();
-      vision.updatePoseEstimation(swerveDrive);
+      // vision.updatePoseEstimation(swerveDrive);
     }
   }
 
