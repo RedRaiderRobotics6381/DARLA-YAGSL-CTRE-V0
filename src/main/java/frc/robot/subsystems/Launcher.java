@@ -9,42 +9,28 @@ import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.LauncherConstants;
 
 public class Launcher extends SubsystemBase {
   CANSparkMax m_launchWheelFollowerL;
-  CANSparkMax m_launchWheelLeaderR;
+  public CANSparkMax m_launchWheelLeaderR;
   CANSparkMax m_feedWheelRight;
 
   // PWM ports/CAN IDs for motor controllers
-  public static final int kFeederRightID = 22;
-  public static final int kLauncherRightID = 20;
-  public static final int kLauncherLeftID = 21;
 
-  // Current limit for launcher and feed wheels
-  public static final int kLauncherCurrentLimit = 80;
-  public static final int kFeedCurrentLimit = 80;
-
-  // Speeds for wheels when intaking and launching. Intake speeds are negative to run the wheels
-  // in reverse
-  public static final double kLauncherSpeed = 1;
-  public static final double kLaunchFeederSpeed = 1;
-  public static final double kIntakeLauncherSpeed = -.2;
-  public static final double kIntakeFeederSpeed = -.2;
-
-  public static final double kLauncherDelay = 1;
 
   /** Creates a new Launcher. */
   public Launcher() {
-    m_launchWheelFollowerL = new CANSparkMax(kLauncherLeftID, MotorType.kBrushless);
-    m_launchWheelLeaderR = new CANSparkMax(kLauncherRightID, MotorType.kBrushless);
-    m_feedWheelRight = new CANSparkMax(kFeederRightID, MotorType.kBrushless);
+    m_launchWheelFollowerL = new CANSparkMax(LauncherConstants.kLauncherLeftID, MotorType.kBrushless);
+    m_launchWheelLeaderR = new CANSparkMax(LauncherConstants.kLauncherRightID, MotorType.kBrushless);
+    m_feedWheelRight = new CANSparkMax(LauncherConstants.kFeederRightID, MotorType.kBrushless);
 
     m_launchWheelFollowerL.restoreFactoryDefaults();
     m_launchWheelLeaderR.restoreFactoryDefaults();
     m_feedWheelRight.restoreFactoryDefaults();
-    m_launchWheelFollowerL.setSmartCurrentLimit(kLauncherCurrentLimit);
-    m_launchWheelLeaderR.setSmartCurrentLimit(kLauncherCurrentLimit);
-    m_feedWheelRight.setSmartCurrentLimit(kFeedCurrentLimit);
+    m_launchWheelFollowerL.setSmartCurrentLimit(LauncherConstants.kLauncherCurrentLimit);
+    m_launchWheelLeaderR.setSmartCurrentLimit(LauncherConstants.kLauncherCurrentLimit);
+    m_feedWheelRight.setSmartCurrentLimit(LauncherConstants.kFeedCurrentLimit);
     m_launchWheelFollowerL.setInverted(true);
     m_launchWheelFollowerL.follow(m_launchWheelLeaderR);
     m_launchWheelFollowerL.setIdleMode(IdleMode.kCoast);
@@ -87,26 +73,38 @@ public class Launcher extends SubsystemBase {
     return this.run(() -> {m_feedWheelRight.set(speed);}); // Set the feeder wheel to the intake speed value
   }
 
+  // public Command IntakeNoteCommand() {
+  //   return this.runEnd(
+  //       () -> {
+  //               RunFeederMotorCommand(kIntakeFeederSpeed)
+  //               .alongWith(RunLauncherMotorCommand(kIntakeLauncherSpeed))
+  //               .handleInterrupt(() -> {StopMotorsCommand();});
+  //             },
+  //       () -> {
+  //               StopMotorsCommand();
+  //             });
+  // }
+  
   public Command IntakeNoteCommand() {
     return this.runEnd(
         () -> {
-                RunFeederMotorCommand(kIntakeFeederSpeed)
-                .alongWith(RunLauncherMotorCommand(kIntakeLauncherSpeed))
-                .handleInterrupt(() -> {StopMotorsCommand();});
+                setLaunchWheel(LauncherConstants.kIntakeFeederSpeed);
+                setFeedWheel(LauncherConstants.kIntakeFeederSpeed);
               },
         () -> {
-                StopMotorsCommand();
+                setLaunchWheel(0);
+                setFeedWheel(0);
               });
   }
 
   public Command OpenNoteHatch() {
     return this.runEnd(
         () -> {
-                RunFeederMotorCommand(-kIntakeFeederSpeed)
-                .alongWith(RunLauncherMotorCommand(-kIntakeLauncherSpeed))
+                RunFeederMotorCommand(-LauncherConstants.kIntakeFeederSpeed)
+                .alongWith(RunLauncherMotorCommand(-LauncherConstants.kIntakeLauncherSpeed))
                 .withTimeout(2.0)
-                .andThen( RunFeederMotorCommand(kIntakeFeederSpeed)
-                .alongWith(RunLauncherMotorCommand(kIntakeLauncherSpeed)))
+                .andThen( RunFeederMotorCommand(LauncherConstants.kIntakeFeederSpeed)
+                .alongWith(RunLauncherMotorCommand(LauncherConstants.kIntakeLauncherSpeed)))
                 .handleInterrupt(() -> {StopMotorsCommand();});
               },
         () -> {

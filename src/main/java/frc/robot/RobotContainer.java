@@ -21,6 +21,10 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.AprilTagConstants;
 import frc.robot.Constants.DrivebaseConstants;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.LauncherCmd.IntakeCmd;
+import frc.robot.commands.LauncherCmd.OpenHatch;
+import frc.robot.commands.LauncherCmd.ScoreAmpCmd;
+import frc.robot.commands.LauncherCmd.ScoreSpeakerCmd;
 import frc.robot.commands.swervedrive.drivebase.AbsoluteDriveAdv;
 import frc.robot.commands.swervedrive.drivebase.AbsoluteDriveAdvHdgAim;
 import frc.robot.subsystems.Launcher;
@@ -50,14 +54,18 @@ public class RobotContainer
   // left stick controls translation
   // right stick controls the angular velocity of the robot
   Command driveFieldOrientedAnglularVelocity = drivebase.driveCommand(
-      () -> MathUtil.applyDeadband(driverXbox.getLeftY() * DrivebaseConstants.Max_Speed_Multiplier * -1, OperatorConstants.LEFT_Y_DEADBAND),
-      () -> MathUtil.applyDeadband(driverXbox.getLeftX() * DrivebaseConstants.Max_Speed_Multiplier * -1, OperatorConstants.LEFT_X_DEADBAND),
-      () -> driverXbox.getRightX() * -1);
+    () -> MathUtil.applyDeadband(-driverXbox.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND) *
+                                                        Constants.DrivebaseConstants.Max_Speed_Multiplier,
+    () -> MathUtil.applyDeadband(-driverXbox.getLeftX(), OperatorConstants.LEFT_X_DEADBAND) *
+                                                        Constants.DrivebaseConstants.Max_Speed_Multiplier,
+    () -> MathUtil.applyDeadband(-driverXbox.getRightX(), OperatorConstants.RIGHT_X_DEADBAND));
 
   Command driveFieldOrientedDirectAngleSim = drivebase.simDriveCommand(
-      () -> MathUtil.applyDeadband(driverXbox.getLeftY() * DrivebaseConstants.Max_Speed_Multiplier, OperatorConstants.LEFT_Y_DEADBAND),
-      () -> MathUtil.applyDeadband(driverXbox.getLeftX() * DrivebaseConstants.Max_Speed_Multiplier, OperatorConstants.LEFT_X_DEADBAND),
-      () -> driverXbox.getRawAxis(2));
+    () -> MathUtil.applyDeadband(-driverXbox.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND) *
+                                                          Constants.DrivebaseConstants.Max_Speed_Multiplier,
+    () -> MathUtil.applyDeadband(-driverXbox.getLeftX(), OperatorConstants.LEFT_X_DEADBAND) *
+                                                          Constants.DrivebaseConstants.Max_Speed_Multiplier,
+    () -> MathUtil.applyDeadband(-driverXbox.getRightX(), OperatorConstants.RIGHT_X_DEADBAND));
 
   // Applies deadbands and inverts controls because joysticks
   // are back-right positive while robot
@@ -82,7 +90,7 @@ public class RobotContainer
                                                                     driverXbox.povDown(),
                                                                     driverXbox.povRight(),
                                                                     driverXbox.povLeft(),
-                                                                    driverXbox.a(),
+                                                                    driverXbox.b(),
                                                                     driverXbox.leftStick());
 
   /**
@@ -101,7 +109,24 @@ public class RobotContainer
    * {@link CommandXboxController Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller PS4}
    * controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight joysticks}.
    */
-  private void configureBindings()
+    //Button 1 is "A" on xbox controller
+    //Button 2 is "B" on xbox controller
+    //Button 3 is "X" on xbox controller  
+    //Button 4 is "Y" on xbox controller
+    //Button 5 is "Left Bumper" on xbox controller
+    //Button 6 is "Right Bumper" on xbox controller
+    //Button 7 is "Back" on xbox controller
+    //Button 8 is "Start" on xbox controller
+    //Button 9 is "Left Joystick" on xbox controller
+    //Button 10 is "Right Joystick" on xbox controller
+    //Axis 0 is left joystick x side to side
+    //Axis 1 is left joystick y forward and back
+    //Axis 2 is left trigger 
+    //Axis 3 is right trigger
+    //Axis 4 is right joystick x side to side
+    //Axis 5 is right joystick y forward and back
+
+   private void configureBindings()
   {
     if (DriverStation.isTest())
     {
@@ -120,9 +145,9 @@ public class RobotContainer
     {
       driverXbox.start().onTrue((Commands.runOnce(drivebase::zeroGyro)));
       driverXbox.back().whileTrue(drivebase.centerModulesCommand());
-      driverXbox.a().whileTrue(m_launcher.IntakeNoteCommand());
-      driverXbox.x().onTrue(m_launcher.ScoreAmpCommand());
-      driverXbox.y().onTrue(m_launcher.ScoreSpeakerCommand());
+      driverXbox.a().onTrue(new IntakeCmd(m_launcher));
+      driverXbox.x().onTrue(new ScoreAmpCmd(m_launcher));
+      driverXbox.y().onTrue(new ScoreSpeakerCmd(m_launcher));
       // driverXbox.x().onTrue(Commands.runOnce(drivebase::addFakeVisionReading));
       // driverXbox.b().whileTrue(
       //     Commands.deferredProxy(() -> drivebase.driveToPose(
@@ -187,6 +212,8 @@ public class RobotContainer
       //System.out.println("LowSpd");
       DrivebaseConstants.Max_Speed_Multiplier = .75;
     }
-    
+  }
+  public void initOpenHatch(){
+    new OpenHatch(m_launcher).schedule();
   }
 }

@@ -59,4 +59,23 @@ public final class Constants
     public static int stageIDB = 0;
     public static int stageIDC = 0; 
   }
+  public static final class LauncherConstants
+  {
+    public static final int kFeederRightID = 22;
+    public static final int kLauncherRightID = 20;
+    public static final int kLauncherLeftID = 21;
+  
+    // Current limit for launcher and feed wheels
+    public static final int kLauncherCurrentLimit = 80;
+    public static final int kFeedCurrentLimit = 80;
+  
+    // Speeds for wheels when intaking and launching. Intake speeds are negative to run the wheels
+    // in reverse
+    public static final double kLauncherSpeed = 1;
+    public static final double kLaunchFeederSpeed = 1;
+    public static final double kIntakeLauncherSpeed = -.2;
+    public static final double kIntakeFeederSpeed = -.2;
+  
+    public static final double kLauncherDelay = 1;
+  }
 }

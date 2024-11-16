@@ -12,8 +12,11 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Constants.AprilTagConstants;
+import frc.robot.commands.LauncherCmd.IntakeCmd;
+import frc.robot.commands.LauncherCmd.OpenHatch;
 import frc.robot.subsystems.LEDsSubSystem;
 // import frc.robot.subsystems.Vision.ObjectVision;
+import frc.robot.subsystems.Launcher;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,6 +36,7 @@ public class Robot extends TimedRobot
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
+
 
   private Timer disabledTimer;
 
@@ -147,6 +151,7 @@ public class Robot extends TimedRobot
     m_robotContainer.setDriveMode();
     m_robotContainer.setMotorBrake(true);
     aprilTagAlliance();
+    m_robotContainer.initOpenHatch();
   }
 
   /**
